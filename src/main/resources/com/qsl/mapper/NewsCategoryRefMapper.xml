@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qsl.mapper.NewsCategoryRefMapper">
+    <resultMap id="BaseResultMap" type="com.qsl.entity.NewsCategoryRef">
+        <result column="news_id" jdbcType="INTEGER" property="newsId"/>
+        <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
+    </resultMap>
+
+    <sql id="tb">news_category_ref</sql>
+
+    <insert id="insert" parameterType="java.lang.Integer">
+        insert into
+        <include refid="tb"/>
+        (news_id, category_id)
+        values (#{newsId}, #{categoryId})
+    </insert>
+
+    <delete id="deleteByCategoryId" parameterType="java.lang.Integer">
+        delete from
+        <include refid="tb"/>
+        where category_id = #{value}
+    </delete>
+
+    <delete id="deleteByNewsId" parameterType="java.lang.Integer">
+        delete from
+        <include refid="tb"/>
+        where news_id = #{value}
+    </delete>
+
+    <select id="countNewsByCategoryId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from
+        <include refid="tb"/>
+        where category_id = #{value}
+    </select>
+
+    <select id="selectCategoryIdByNewsId" resultType="java.lang.Integer">
+        SELECT category_id FROM
+        <include refid="tb"/>
+        WHERE news_id = #{value}
+    </select>
+
+
+    <select id="selectNewsIdByCategoryId" resultType="java.lang.Integer">
+        SELECT news_id FROM
+        <include refid="tb"/>
+        WHERE category_id = #{value}
+    </select>
+
+    <select id="listCategoryByNewsId" parameterType="java.lang.Integer"
+            resultType="com.qsl.entity.Category">
+        SELECT
+        category.category_id, category.category_pid, category.category_name
+        FROM category, news_category_ref
+        WHERE news_category_ref.news_id = #{value} AND
+        news_category_ref.category_id = category.category_id
+        ORDER BY category.category_pid asc
+    </select>
+
+
+</mapper>

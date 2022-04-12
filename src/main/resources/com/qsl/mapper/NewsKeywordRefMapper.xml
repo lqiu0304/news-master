@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qsl.mapper.NewsKeywordRefMapper">
+  <resultMap id="BaseResultMap" type="com.qsl.entity.NewsKeywordRef">
+    <result column="news_id" jdbcType="INTEGER" property="newsId" />
+    <result column="keyword_id" jdbcType="INTEGER" property="keywordId" />
+  </resultMap>
+
+  <sql id="tb">news_keyword_ref</sql>
+
+  <insert id="insert" parameterType="java.lang.Integer" >
+    insert into <include refid="tb"/>
+    (news_id, keyword_id)
+    values (#{newsId}, #{keywordId})
+  </insert>
+
+  <delete id="deleteByKeywordId" parameterType="java.lang.Integer" >
+    delete from <include refid="tb"/> where keyword_id = #{value}
+  </delete>
+
+  <delete id="deleteByNewsId" parameterType="java.lang.Integer" >
+    delete from <include refid="tb"/> where news_id = #{value}
+  </delete>
+
+  <select id="countNewsByKeywordId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(*) from <include refid="tb"/>
+    where keyword_id = #{value}
+  </select>
+
+  <select id="listKeywordByNewsId" parameterType="java.lang.Integer" resultType="com.qsl.entity.Keyword">
+    SELECT keyword.* FROM keyword, news_keyword_ref
+    WHERE news_keyword_ref.news_id = #{value} AND
+    news_keyword_ref.keyword_id = keyword.keyword_id
+  </select>
+
+
+</mapper>

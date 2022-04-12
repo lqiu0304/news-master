@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qsl.mapper.KeywordMapper">
+    <resultMap id="Keyword" type="com.qsl.entity.Keyword">
+        <id column="keyword_id" property="keywordId" jdbcType="INTEGER"/>
+        <result column="keyword_name" property="keywordName" jdbcType="VARCHAR"/>
+        <result column="keyword_description" property="keywordDescription" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    keyword_id, keyword_name, keyword_description
+  </sql>
+
+    <sql id="tb">keyword</sql>
+
+    <!--根据id查询关键字-->
+    <select id="getKeywordById" resultMap="Keyword" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="tb"/>
+        where keyword_id = #{keywordId,jdbcType=INTEGER}
+    </select>
+
+    <!--根据删除关键字-->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from
+        <include refid="tb"/>
+        where keyword_id = #{keywordId,jdbcType=INTEGER}
+    </delete>
+
+    <!--添加关键字-->
+    <insert id="insert" parameterType="com.qsl.entity.Keyword" useGeneratedKeys="true"
+            keyProperty="keywordId">
+        insert into
+        <include refid="tb"/>
+        (keyword_name, keyword_description)
+        values (#{keywordName,jdbcType=VARCHAR}, #{keywordDescription,jdbcType=VARCHAR})
+    </insert>
+
+    <!--修改关键字-->
+    <update id="update" parameterType="com.qsl.entity.Keyword">
+        update
+        <include refid="tb"/>
+        <set>
+            <if test="keywordName != null">
+                keyword_name = #{keywordName,jdbcType=VARCHAR},
+            </if>
+            <if test="keywordDescription != null">
+                keyword_description = #{keywordDescription,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where keyword_id = #{keywordId,jdbcType=INTEGER}
+    </update>
+
+    <!--获得关键字列表-->
+    <select id="listKeyword" resultType="com.qsl.entity.Keyword">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        <include refid="tb"/>
+    </select>
+
+    <!--获得关键字总数-->
+    <select id="countKeyword" resultType="Integer">
+        SELECT COUNT(*) FROM
+        <include refid="tb"/>
+    </select>
+
+    <!--根据关键字名获取关键字-->
+    <select id="getKeywordByName" parameterType="String" resultType="com.qsl.entity.Keyword">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        <include refid="tb"/>
+        WHERE keyword_name=#{value}
+        limit 1
+    </select>
+</mapper>
